@@ -1,5 +1,6 @@
 package com.kg6sed.eggshell;
 
+import com.kg6sed.eggshell.jline.WrappingCompletor;
 import jline.*;
 
 import java.io.ByteArrayOutputStream;
@@ -56,9 +57,29 @@ public abstract class AbstractShell implements Shell {
                     if (annotation instanceof Argument) {
                         Argument arg = (Argument) annotation;
                         if (!arg.completions()[0].equals(Argument.NO_COMPLETIONS)) {
-                            if (arg.type().equalsIgnoreCase("simple")) {
+                            if (arg.type().equalsIgnoreCase(Argument.SIMPLE)) {
                                 completors.add(new SimpleCompletor(arg.completions()));
                                 addedCompletor = true;
+                            } else if (arg.type().equalsIgnoreCase(Argument.SIMPLE_METHOD)) {
+                                String[] result = new String[0];
+                                try {
+                                    Method m = this.getClass().getDeclaredMethod(arg.completions()[0]);
+                                    m.setAccessible(true);
+                                    result = (String[]) m.invoke(this);
+                                } catch (Exception e) {
+                                    // TODO: log statement
+                                }
+                                completors.add(new SimpleCompletor(result));
+                                addedCompletor = true;
+                            } else if (arg.type().equalsIgnoreCase(Argument.COMPLETOR_GETTER)) {
+                                try {
+                                    Method m = this.getClass().getDeclaredMethod(arg.completions()[0]);
+                                    m.setAccessible(true);
+                                    completors.add(new WrappingCompletor(this, m));
+                                    addedCompletor = true;
+                                } catch (NoSuchMethodException e) {
+                                    // TOOD: log statement
+                                } 
                             }
                         } else if (arg.type().equalsIgnoreCase("filename")) {
                             completors.add(new FileNameCompletor());

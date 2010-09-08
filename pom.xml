@@ -34,6 +34,26 @@
 		</plugins>
 	</build>
 
+
+<distributionManagement>
+  <!-- use the following if you're not using a snapshot version. -->
+  <repository>
+    <id>sparks-ssh-repo</id>
+    <name>sparks SSH repository</name>
+    <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/release</url>
+  </repository>
+  <!-- use the following if you ARE using a snapshot version. -->
+  <snapshotRepository>
+    <id>sparks-ssh-snapshot-repo</id>
+    <name>sparks SSH repository</name>
+    <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/snapshot</url>
+  </snapshotRepository>
+</distributionManagement>
+
+    
+
+
+
     <!--
 	<pluginRepositories> 
 		<pluginRepository> 

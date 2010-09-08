@@ -32,10 +32,13 @@ import java.lang.annotation.Target;
 @Target({ElementType.PARAMETER})
 public @interface Argument {
     public static String NO_COMPLETIONS = "__NO_COMPLETIONS__";
-
+    public static String SIMPLE = "simple";
+    public static String SIMPLE_METHOD = "simple_method";
+    public static String COMPLETOR_GETTER = "completor_getter";
+    
     String name();
 
-    String type() default "simple";
+    String type() default SIMPLE;
 
     String[] completions() default NO_COMPLETIONS;
 }

@@ -33,20 +33,25 @@
                 <version>2.3.2</version>
             </plugin>
         </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.springframework.build.aws</groupId>
+                <artifactId>org.springframework.build.aws.maven</artifactId>
+                <version>3.0.0.RELEASE</version>
+            </extension>
+        </extensions>
     </build>
 
     <distributionManagement>
-        <!-- use the following if you're not using a snapshot version. -->
         <repository>
-            <id>sparks-ssh-repo</id>
-            <name>sparks SSH repository</name>
-            <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/release</url>
+            <id>s3-repo</id>
+            <name>Amazon S3 Repo</name>
+            <url>s3://kg6sed/repo/release</url>
         </repository>
-        <!-- use the following if you ARE using a snapshot version. -->
         <snapshotRepository>
-            <id>sparks-ssh-snapshot-repo</id>
-            <name>sparks SSH repository</name>
-            <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/snapshot</url>
+            <id>s3-snapshot-repo</id>
+            <name>Amazon S3 Snapshot Repo</name>
+            <url>s3://kg6sed/repo/snapshot</url>
         </snapshotRepository>
     </distributionManagement>
 

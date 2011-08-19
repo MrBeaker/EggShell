@@ -1,7 +1,26 @@
 
+MAVEN INSTRUCTIONS
 
+Add the kg6sed repository:
 
-Tool to create interactive commandline tools in Java using annotations.
+    <repositories>
+        <repository>
+            <id>kg6sed-release-repo</id>
+            <name>kg6sed.com release repo</name>
+            <url>https://kg6sed.s3.amazonaws.com/repo/release</url>
+        </repository>
+    </repositories>
+
+and then add the dependency:
+
+    <dependencies>
+        <dependency>
+            <groupId>com.kg6sed.eggshell</groupId>
+            <artifactId>EggShell</artifactId>
+            <version>1.0</version>
+        </dependency>
+    </dependencies>
+
 
 
 

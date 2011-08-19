@@ -1,6 +1,6 @@
 package com.kg6sed.eggshell;
 
-/**
+/*
  * EggShell - Annotation driven command-line shell library
  * Copyright (C) 2010 Daniel Mattias Larsson
  * <p/>

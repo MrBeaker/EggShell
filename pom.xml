@@ -1,64 +1,53 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
-	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.kg6sed.eggshell</groupId>
-	<artifactId>EggShell</artifactId>
-	<version>1.0</version>
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.kg6sed.eggshell</groupId>
+    <artifactId>EggShell</artifactId>
+    <version>1.0</version>
 
-	<dependencies>
-		<dependency>
-			<groupId>org.testng</groupId>
-			<artifactId>testng</artifactId>
-			<version>5.5</version>
-			<classifier>jdk15</classifier>
-			<scope>test</scope>
-		</dependency>
+    <dependencies>
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>5.5</version>
+            <classifier>jdk15</classifier>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>jline</groupId>
             <artifactId>jline</artifactId>
             <version>0.9.94</version>
         </dependency>
-	</dependencies>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<configuration>
-					<source>1.5</source>
-					<target>1.5</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>1.5</source>
+                    <target>1.5</target>
+                </configuration>
+                <version>2.3.2</version>
+            </plugin>
+        </plugins>
+    </build>
 
+    <distributionManagement>
+        <!-- use the following if you're not using a snapshot version. -->
+        <repository>
+            <id>sparks-ssh-repo</id>
+            <name>sparks SSH repository</name>
+            <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/release</url>
+        </repository>
+        <!-- use the following if you ARE using a snapshot version. -->
+        <snapshotRepository>
+            <id>sparks-ssh-snapshot-repo</id>
+            <name>sparks SSH repository</name>
+            <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
 
-<distributionManagement>
-  <!-- use the following if you're not using a snapshot version. -->
-  <repository>
-    <id>sparks-ssh-repo</id>
-    <name>sparks SSH repository</name>
-    <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/release</url>
-  </repository>
-  <!-- use the following if you ARE using a snapshot version. -->
-  <snapshotRepository>
-    <id>sparks-ssh-snapshot-repo</id>
-    <name>sparks SSH repository</name>
-    <url>scpexe://sparks.kg6sed.com/usr/share/tomcat6/webapps/ROOT/repo/snapshot</url>
-  </snapshotRepository>
-</distributionManagement>
-
-    
-
-
-
-    <!--
-	<pluginRepositories> 
-		<pluginRepository> 
-			<id>apache.snapshots</id> 
-			<url>http://people.apache.org/repo/m2-snapshot-repository/</url> 
-		</pluginRepository> 
-	</pluginRepositories>  -->
 </project>

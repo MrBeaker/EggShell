@@ -1,8 +1,6 @@
 package com.kg6sed.eggshell;
 
-import java.lang.reflect.Method;
-
-/**
+/*
  * EggShell - Annotation driven command-line shell library
  * Copyright (C) 2010 Daniel Mattias Larsson
  * <p/>
@@ -19,6 +17,12 @@ import java.lang.reflect.Method;
  * You should have received a copy of the GNU Lesser General Public
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
+ */
+
+import java.lang.reflect.Method;
+
+/**
+ *  Class representing a shell command.
  */
 public class ShellCommand {
     private String name;

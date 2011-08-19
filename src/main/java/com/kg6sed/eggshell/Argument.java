@@ -1,12 +1,6 @@
 package com.kg6sed.eggshell;
 
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-/**
+/*
  * EggShell - Annotation driven command-line shell library
  * Copyright (C) 2010 Daniel Mattias Larsson
  * <p/>
@@ -24,6 +18,12 @@ import java.lang.annotation.Target;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * Arguments

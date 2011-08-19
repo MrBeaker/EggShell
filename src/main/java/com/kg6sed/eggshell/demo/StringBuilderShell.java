@@ -1,14 +1,6 @@
 package com.kg6sed.eggshell.demo;
 
-import com.kg6sed.eggshell.AbstractShell;
-import com.kg6sed.eggshell.Command;
-import com.kg6sed.eggshell.ExitShellException;
-import com.kg6sed.eggshell.Shell;
-
-import java.io.IOException;
-
-
-/**
+/*
  * EggShell - Annotation driven command-line shell library
  * Copyright (C) 2010 Daniel Mattias Larsson
  * <p/>
@@ -26,6 +18,13 @@ import java.io.IOException;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301  USA
  */
+
+import com.kg6sed.eggshell.AbstractShell;
+import com.kg6sed.eggshell.Command;
+import com.kg6sed.eggshell.ExitShellException;
+import com.kg6sed.eggshell.Shell;
+
+import java.io.IOException;
 
 /**
  * This class demonstrates how you can build a shell around a StringBuilder object.
@@ -52,18 +51,23 @@ public class StringBuilderShell extends AbstractShell {
     }
 
     /**
-     * Create a new StringBuilder instance.
+     * Append to the StringBuilder.
+     *
+     * @param value string to append
      */
-    @Command(name = "new")
-    private void doNew() {
-        this.builder = new StringBuilder();
-    }
-
     @Command
     private void append(String value) {
         this.builder.append(value);
     }
 
+    /**
+     * Clear the StringBuilder.
+     *
+     */
+    @Command
+    private void clear() {
+        this.builder = new StringBuilder();
+    }
 
     /**
      * Quit the shell.
@@ -80,6 +84,5 @@ public class StringBuilderShell extends AbstractShell {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
     }
 }

@@ -28,15 +28,17 @@ public class ShellCommand {
     private String name;
     private String help;
     private Method method;
+    private int requiredArgumentCount;
 
-    public ShellCommand(String name, Method method) {
-        this(name, method, null);
+    public ShellCommand(String name, Method method, int requiredArgumentCount) {
+        this(name, method, requiredArgumentCount, null);
     }
 
-    public ShellCommand(String name, Method method, String help) {
+    public ShellCommand(String name, Method method, int requiredArgumentCount, String help) {
         this.name = name;
         this.method = method;
         this.help = help;
+        this.requiredArgumentCount = requiredArgumentCount;
     }
 
     public String getName() {
@@ -50,4 +52,9 @@ public class ShellCommand {
     public Method getMethod() {
         return this.method;
     }
+
+    public int getRequiredArgumentCount() {
+        return requiredArgumentCount;
+    }
+
 }

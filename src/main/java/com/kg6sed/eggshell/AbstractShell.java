@@ -6,12 +6,14 @@ import jline.*;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
-import java.io.StringWriter;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.*;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 
 /**
  * EggShell - Annotation driven command-line shell library
@@ -79,7 +81,7 @@ public abstract class AbstractShell implements Shell {
                                     addedCompletor = true;
                                 } catch (NoSuchMethodException e) {
                                     // TOOD: log statement
-                                } 
+                                }
                             }
                         } else if (arg.type().equalsIgnoreCase("filename")) {
                             completors.add(new FileNameCompletor());
@@ -131,32 +133,47 @@ public abstract class AbstractShell implements Shell {
 
                     Object[] arguments = new Object[command.getMethod().getParameterTypes().length];
 
-                    if (args.length != arguments.length + 1) {
-                        this.console.printString(String.format("'%s': Invalid number of arguments, got %d, expected %d", command.getName(), args.length - 1, arguments.length));
+
+                    if (args.length < command.getRequiredArgumentCount() + 1) {
+                        this.console.printString(String.format("'%s': Invalid number of arguments, got %d, expected %d", command.getName(), args.length - 1, command.getRequiredArgumentCount()));
                         this.console.printNewline();
                         StringBuilder usage = new StringBuilder("Usage: ");
                         usage.append(command.getName());
                         Annotation[][] annArray = command.getMethod().getParameterAnnotations();
                         for (int i = 0; i < annArray.length; i++) {
                             boolean usageAdded = false;
+                            boolean optional = false;
                             for (int j = 0; j < annArray[i].length; j++) {
                                 if (annArray[i][j] instanceof Argument) {
                                     Argument argument = (Argument) annArray[i][j];
-                                    usage.append(' ');
-                                    usage.append(argument.name());
-                                    usageAdded = true;
+                                    optional = argument.optional();
+                                    if (!argument.name().equals(Argument.NO_ARGUMENT_NAME)) {
+                                        usage.append(' ');
+                                        if (optional) {
+                                            usage.append("{").append(argument.name()).append("}");
+                                        } else {
+                                            usage.append(argument.name());
+                                        }
+                                        usageAdded = true;
+                                    }
                                     break;
                                 }
                             }
                             if (!usageAdded) {
                                 usage.append(' ');
-                                usage.append(command.getMethod().getParameterTypes()[i].getName());
+                                if (optional) {
+                                    usage.append("{");
+                                    usage.append(command.getMethod().getParameterTypes()[i].getName());
+                                    usage.append("}");
+                                } else {
+                                    usage.append(command.getMethod().getParameterTypes()[i].getName());
+                                }
                             }
                         }
                         this.console.printString(usage.toString());
                         this.console.printNewline();
                         continue;
-                    }
+                    }   // end
 
                     // have the right number of arguments, fill out the argument array
 
@@ -165,54 +182,82 @@ public abstract class AbstractShell implements Shell {
                     boolean error = false;
                     for (int i = 0; i < parameters.length; i++) {
                         if (parameters[i] == String.class) {
-                            arguments[i] = args[i + 1];
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = null;
+                            } else {
+                                arguments[i] = args[i + 1];
+                            }
                         } else if (parameters[i] == long.class) {
-                            try {
-                                arguments[i] = Long.parseLong(args[i + 1]);
-                            } catch (NumberFormatException e) {
-                                this.console.printString(String.format("Cannot parse '%s' to long for parameter %d", args[i + 1], i));
-                                this.console.printNewline();
-                                error = true;
-                                break;
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = 0L;
+                            } else {
+                                try {
+                                    arguments[i] = Long.parseLong(args[i + 1]);
+                                } catch (NumberFormatException e) {
+                                    this.console.printString(String.format("Cannot parse '%s' to long for parameter %d", args[i + 1], i));
+                                    this.console.printNewline();
+                                    error = true;
+                                    break;
+                                }
                             }
                         } else if (parameters[i] == int.class) {
-                            try {
-                                arguments[i] = Integer.parseInt(args[i + 1]);
-                            } catch (NumberFormatException e) {
-                                this.console.printString(String.format("Cannot parse '%s' to int for parameter %d", args[i + 1], i));
-                                this.console.printNewline();
-                                error = true;
-                                break;
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = 0;
+                            } else {
+                                try {
+                                    arguments[i] = Integer.parseInt(args[i + 1]);
+                                } catch (NumberFormatException e) {
+                                    this.console.printString(String.format("Cannot parse '%s' to int for parameter %d", args[i + 1], i));
+                                    this.console.printNewline();
+                                    error = true;
+                                    break;
+                                }
                             }
                         } else if (parameters[i] == short.class) {
-                            try {
-                                arguments[i] = Short.parseShort(args[i + 1]);
-                            } catch (NumberFormatException e) {
-                                this.console.printString(String.format("Cannot parse '%s' to short for parameter %d", args[i + 1], i));
-                                this.console.printNewline();
-                                error = true;
-                                break;
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = (short) 0;
+                            } else {
+                                try {
+                                    arguments[i] = Short.parseShort(args[i + 1]);
+                                } catch (NumberFormatException e) {
+                                    this.console.printString(String.format("Cannot parse '%s' to short for parameter %d", args[i + 1], i));
+                                    this.console.printNewline();
+                                    error = true;
+                                    break;
+                                }
                             }
                         } else if (parameters[i] == char.class) {
-                            if (args[i + 1].length() != 1) {
-                                this.console.printString(String.format("Cannot parse '%s' to char for parameter %d", args[i + 1], i));
-                                this.console.printNewline();
-                                error = true;
-                                break;
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = (char) 0;
                             } else {
-                                arguments[i] = args[i + 1].charAt(0);
+                                if (args[i + 1].length() != 1) {
+                                    this.console.printString(String.format("Cannot parse '%s' to char for parameter %d", args[i + 1], i));
+                                    this.console.printNewline();
+                                    error = true;
+                                    break;
+                                } else {
+                                    arguments[i] = args[i + 1].charAt(0);
+                                }
                             }
                         } else if (parameters[i] == byte.class) {
-                            try {
-                                arguments[i] = Byte.parseByte(args[i + 1]);
-                            } catch (NumberFormatException e) {
-                                this.console.printString(String.format("Cannot parse '%s' to byte for parameter %d", args[i + 1], i));
-                                this.console.printNewline();
-                                error = true;
-                                break;
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = (byte) 0;
+                            } else {
+                                try {
+                                    arguments[i] = Byte.parseByte(args[i + 1]);
+                                } catch (NumberFormatException e) {
+                                    this.console.printString(String.format("Cannot parse '%s' to byte for parameter %d", args[i + 1], i));
+                                    this.console.printNewline();
+                                    error = true;
+                                    break;
+                                }
                             }
                         } else if (parameters[i] == boolean.class) {
-                            arguments[i] = !(args[i + 1].length() < 1 || (!args[i + 1].startsWith("t") && !args[i + 1].startsWith("T")));
+                            if (args.length <= (i + 1)) {
+                                arguments[i] = false;
+                            } else {
+                                arguments[i] = !(args[i + 1].length() < 1 || (!args[i + 1].startsWith("t") && !args[i + 1].startsWith("T")));
+                            }
                         } else {
                             // check if the class has a constructor that takes a string
                             Constructor constructor = parameters[i].getConstructor(String.class);
@@ -327,10 +372,28 @@ public abstract class AbstractShell implements Shell {
                     commandName = m.getName();
                 }
 
+                Annotation[][] annArray = m.getParameterAnnotations();
+
+                int requiredArguments = 0;
+
+                for (int i = 0; i < annArray.length; i++) {
+                    requiredArguments++;
+                    for (int j = 0; j < annArray[i].length; j++) {
+                        if (annArray[i][j] instanceof Argument) {
+                            Argument argument = (Argument) annArray[i][j];
+                            if (argument.optional()) {
+                                requiredArguments--;
+                            }
+                            break;
+                        }
+                    }
+                }
+
+
                 if (c.help().equals(Command.NO_HELP)) {
-                    this.commands.put(commandName.trim().toLowerCase(), new ShellCommand(commandName, m));
+                    this.commands.put(commandName.trim().toLowerCase(), new ShellCommand(commandName, m, requiredArguments));
                 } else {
-                    this.commands.put(commandName.trim().toLowerCase(), new ShellCommand(commandName, m, c.help()));
+                    this.commands.put(commandName.trim().toLowerCase(), new ShellCommand(commandName, m, requiredArguments, c.help()));
                 }
             }
 

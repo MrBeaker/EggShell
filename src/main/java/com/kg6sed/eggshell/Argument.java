@@ -31,14 +31,18 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target({ElementType.PARAMETER})
 public @interface Argument {
+    public static String NO_ARGUMENT_NAME = "__NO_ARGUMENT_NAME__";
+
     public static String NO_COMPLETIONS = "__NO_COMPLETIONS__";
     public static String SIMPLE = "simple";
     public static String SIMPLE_METHOD = "simple_method";
     public static String COMPLETOR_GETTER = "completor_getter";
     
-    String name();
+    String name() default NO_ARGUMENT_NAME;
 
     String type() default SIMPLE;
+
+    boolean optional() default false;
 
     String[] completions() default NO_COMPLETIONS;
 }
